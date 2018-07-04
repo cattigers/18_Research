@@ -1,38 +1,44 @@
-import cv2
-import os
-from pathlib import *
+from pathlib import Path
+import framer
+import tfrecorder
+
+def main(file_names, name, video_path, label_path, result_path):
+    frame_path = result_path / Path('frame')
+    record_path = result_path / Path('record')
+    print("Extracting frames from video...")
+
+    for file_name in file_names:
+        print(str(name / file_name))
+        
+        video_file = video_path / name / file_name
+        label_file = label_path / name / Path(file_name.stem)
+        frame_folder = frame_path / name / Path(file_name.stem)
+        record_file = record_path / name / Path(file_name.stem + '.tfrecord')
+        framer.extract(video_file, frame_folder)
+        #print("Making TFRecords from frames...")
+        #tfrecorder.record(frame_path, record_path)
+    print("DONE!")
 
 
-def extract(path, name):
-    vid = Path(path, 'video', name)
-    img = Path(path, 'frames', name)
+if __name__ == '__main__':
+    # constants
+    base = Path('./')
+    video_path = base / Path('video')
+    label_path = base / Path('label')
+    result_path = base / Path('result')
 
-    if not vid.exists():
-        print('Path ' + str(vid) + ' Does not exists.\n')
-        return
+    print("Running data preset...")
 
-    cap = cv2.VideoCapture(str(vid))
-    if not cap.isOpened():
-        print("video not captured.")
-        return
+    for folder in sorted(video_path.glob('*')):
 
-    if not img.exists():
-        print('Making result directory...\n')
-        os.mkdir(str(img))
+        if not folder.is_dir():
+            print("%s is not a directory!" % str(folder))
+            continue
+        
+        print(folder)
 
-    success, image = cap.read()
-    count = 0
-    while success:
-        print('Writing %dth frame' % count)
-        now = Path(img, '%05d.jpg' % count)
-        cv2.imwrite(str(now), image)     # save frame as JPEG file
-        count += 1
-        success, image = cap.read()
-    print("DONE!!\n")
-
-
-def main():
-    extract('/home/alpah/dev/AI/2017RnE/CCNN/Demo/Data/', 'sample.mp4')
-
-
-main()
+        file_names = folder.glob('*.h264')
+        file_names = list(map(lambda x: Path(x.name), file_names))
+        file_names = sorted(file_names)
+        # print("base folder: %s, video folder: %s, label folder: %s, result path: %s" % (base, video_path, label_path, result_path))
+        main(file_names, Path(folder.name), video_path, label_path, result_path)

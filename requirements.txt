@@ -1,0 +1,6 @@
+opencv-contrib-python==3.4.1.15
+pathlib==1.0.1
+Pillow==5.1.0
+protobuf==3.6.0
+tensorflow==1.8.0
+numpy==1.14.5
