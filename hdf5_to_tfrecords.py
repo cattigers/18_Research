@@ -10,7 +10,11 @@ def hdf5_to_np(hdf5):
     data = np.array(data)
     data = np.squeeze(data, axis=1)
     data = np.squeeze(data, axis=1)
-    return data
+
+    result = np.zeros((180, 1001), dtype=np.float64)
+    result[:data.shape[0], :data.shape[1]] = data
+
+    return result
 
 if __name__ == "__main__":
     hdf5_list = Path('./hdf5').glob('*.h5')
@@ -18,10 +22,12 @@ if __name__ == "__main__":
     hdf5_list = list(map(lambda x: str(x), hdf5_list))
 
     for hdf5 in hdf5_list:
-        result_path = Path('result/tfrecord/' + hdf5[5:-3])
+        result_path = Path('result/tfrecord/')
+
         if not result_path.exists():
             result_path.mkdir(parents=True)
-        data = hdf5_to_np(hdf5)
-        np_to_tfrecords(data, None, 'result/tfrecord/' + hdf5[5:-3])
 
-    print(hdf5_list)
+        result_path = result_path / Path(hdf5).stem
+        
+        data = hdf5_to_np(hdf5)
+        np_to_tfrecords(data, None, str(result_path))

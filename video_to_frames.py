@@ -2,7 +2,7 @@ import cv2
 from pathlib import Path
 
 
-def extract(video_path, result_path):
+def video_to_frames(video_path, result_path):
     print()
 
     if not result_path.exists():
@@ -32,3 +32,21 @@ def extract(video_path, result_path):
     print("Frames are saved at: %s" % str(result_path))
     print()
     return
+
+
+if __name__ == "__main__":
+    video_list = Path('./video/').glob('**/*.h264')
+    video_list = list(map(lambda x: str(x), video_list))
+    video_list = sorted(video_list)
+
+    for video in video_list:
+        result = Path(video).parts
+        result = list(result)
+        result[0] = 'result'
+        result[-1] = Path(Path(video).stem)
+        result = Path(*result)
+        print(result)
+        print(video)
+        video_to_frames(Path(video), Path(result))
+
+    # video_to_frames()
