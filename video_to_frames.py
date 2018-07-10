@@ -42,7 +42,7 @@ if __name__ == "__main__":
     for video in video_list:
         result = Path(video).parts
         result = list(result)
-        result[0] = 'result'
+        result[0] = 'result/frames'
         result[-1] = Path(Path(video).stem)
         result = Path(*result)
         print(result)

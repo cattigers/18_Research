@@ -6,6 +6,10 @@ __author__ = "Sangwoong Yoon"
 # from https://gist.github.com/swyoon/8185b3dcf08ec728fb22b99016dd533f
 
 def np_to_tfrecords(X, Y, file_path_prefix, verbose=True):
+    print(Y)
+    print(Y.shape)
+    print(type(Y))
+    print(Y.dtype)
     """
     Converts a Numpy array (or two Numpy arrays) into a tfrecord file.
     For supervised learning, feed training inputs to X and training labels to Y.
@@ -41,10 +45,10 @@ def np_to_tfrecords(X, Y, file_path_prefix, verbose=True):
             return lambda array: tf.train.Feature(int64_list=tf.train.Int64List(value=array))
         else:  
             raise ValueError("The input should be numpy ndarray. \
-                               Instaed got {}".format(ndarray.dtype))
+                               Instaed got %s" % (ndarray.dtype))
             
     assert isinstance(X, np.ndarray)
-    assert len(X.shape) == 2  # If X has a higher rank, 
+    assert len(X.shape) == 3  # If X has a higher rank, 
                                # it should be rshape before fed to this function.
     assert isinstance(Y, np.ndarray) or Y is None
     
@@ -52,7 +56,7 @@ def np_to_tfrecords(X, Y, file_path_prefix, verbose=True):
     dtype_feature_x = _dtype_feature(X)
     if Y is not None:
         assert X.shape[0] == Y.shape[0]
-        assert len(Y.shape) == 2
+        # assert len(Y.shape) == 3
         dtype_feature_y = _dtype_feature(Y)            
     
     # Generate tfrecord writer

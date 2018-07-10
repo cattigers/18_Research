@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import re
 
-if __name__ == "__main__":
+
+def words_to_nparray():
 
     df = pd.read_csv('./words.csv', delimiter=',')
     words = list(df)
@@ -66,14 +67,30 @@ if __name__ == "__main__":
     what_i_want_out = np.array(output_batch) # what_i_want[i] == i+1 번째 단어(model_n_i+1)
     what_i_want_tar = np.array(target_batch) # what_i_want[i] == i+1 번째 단어(model_n_i+1)
 
+    # what_i_want_out = np.ndarray(what_i_want_out)
+    # print(what_i_want_out.dtype)
+
+    '''
+    print(type(what_i_want_out))
+
+    what_i_want_out.reshape((32, 10, 33))
+
+    # what_i_want_out = np.reshape(what_i_want_out, (what_i_want_out.shape[0], *(what_i_want_out[0].shape)))
     print(what_i_want_out)
-    print(what_i_want_tar)
+    print(what_i_want_out.shape)
+    print(what_i_want_out[0].shape)
+    '''
+    return (what_i_want_out, what_i_want_tar)
+
+if __name__ == "__main__":
+    (out, tar) = words_to_nparray()
+
+    print(out)
+    print(tar)
 
 
     # with open('words_array.txt', 'w', encoding='utf-8') as f:
     #     f.write(str(words)+'\n'*3)
     #     f.write('output_batch: \n\n'+str(what_i_want_out))
     #     f.write('target_batch: \n\n'+str(what_i_want_tar))
-
-    print("succeeded")
 
